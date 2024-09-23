@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">daffa-github-user</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_menu">home</string>
+    <string name="search_menu">search</string>
+    <string name="profile_menu">profile</string>
 </resources>
