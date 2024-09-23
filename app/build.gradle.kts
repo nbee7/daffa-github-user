@@ -40,6 +40,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     val localProperties = Properties()
@@ -51,6 +52,11 @@ android {
 
     val baseUrl = localProperties.getProperty("API_BASE_URL")
     val authToken = localProperties.getProperty("API_AUTH_TOKEN")
+
+    defaultConfig {
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        buildConfigField("String", "TOKEN", "\"$authToken\"")
+    }
 }
 
 dependencies {
