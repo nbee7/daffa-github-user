@@ -5,4 +5,6 @@
     <string name="home_menu">home</string>
     <string name="search_menu">search</string>
     <string name="profile_menu">profile</string>
+    <string name="txt_followings">Followings</string>
+    <string name="txt_followers">Followers</string>
 </resources>

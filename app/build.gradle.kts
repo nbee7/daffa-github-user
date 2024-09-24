@@ -30,6 +30,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isMinifyEnabled = false
+            isDebuggable = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -61,6 +65,8 @@ android {
 
 dependencies {
 
+    implementation(libs.timber)
+    implementation(libs.circle.image)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -92,4 +98,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.core.testing)
 }

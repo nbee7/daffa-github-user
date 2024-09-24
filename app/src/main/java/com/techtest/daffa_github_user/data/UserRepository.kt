@@ -35,7 +35,7 @@ class UserRepository(
             }
 
             override fun shouldFetch(data: List<User>?): Boolean {
-                return data.isNullOrEmpty()
+                return data.isNullOrEmpty() || data.isEmpty()
             }
         }.asFlow()
 

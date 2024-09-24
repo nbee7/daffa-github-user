@@ -10,13 +10,33 @@
         android:name="com.techtest.daffa_github_user.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_to_detail"
+            app:destination="@id/detailUserFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+
+    <fragment
+        android:id="@+id/detailUserFragment"
+        android:name="com.techtest.daffa_github_user.ui.detail.DetailUserFragment"
+        android:label="fragment_detail-user"
+        tools:layout="@layout/fragment_home">
+        <argument
+            android:name="username"
+            app:argType="string"
+            android:defaultValue="nbee7" />
+    </fragment>
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.techtest.daffa_github_user.ui.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search">
     </fragment>
+
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.techtest.daffa_github_user.ui.profile.ProfileFragment"

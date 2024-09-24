@@ -16,7 +16,7 @@
         android:padding="8dp">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/img_user"
+            android:id="@+id/iv_user"
             android:layout_width="56dp"
             android:layout_height="56dp"
             app:shapeAppearanceOverlay="@drawable/circle_shape"
@@ -44,7 +44,7 @@
             android:layout_marginStart="16dp"
             android:textColor="@color/md_theme_onPrimaryContainer"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/img_user"
+            app:layout_constraintStart_toEndOf="@+id/iv_user"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/last_names"
             style="@style/Text.Black.TittleItemUsername" />
