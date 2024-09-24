@@ -1,6 +1,9 @@
 package com.techtest.daffa_github_user.di
 
+import android.content.Context
 import androidx.room.Room
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.techtest.daffa_github_user.BuildConfig
@@ -13,15 +16,16 @@ import com.techtest.daffa_github_user.data.source.remote.network.ApiService
 import com.techtest.daffa_github_user.domain.repository.IUserRepository
 import com.techtest.daffa_github_user.domain.usecase.UserInteractor
 import com.techtest.daffa_github_user.domain.usecase.UserUseCase
+import com.techtest.daffa_github_user.ui.detail.DetailUserViewModel
 import com.techtest.daffa_github_user.ui.home.HomeViewModel
+import com.techtest.daffa_github_user.ui.search.SearchViewModel
 import com.techtest.daffa_github_user.util.DataMapper
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val databaseModule = module {
@@ -35,11 +39,6 @@ val databaseModule = module {
     }
 }
 
-val loggingInterceptor = if (BuildConfig.DEBUG) {
-    HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-} else {
-    HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
-}
 
 const val CONNECTION_TIMEOUT = 120L
 val moshi = Moshi.Builder()
@@ -48,8 +47,15 @@ val moshi = Moshi.Builder()
 
 val networkModule = module {
     single {
+        val context: Context = get()
+        val chuckerInterceptor = ChuckerInterceptor.Builder(context)
+            .collector(ChuckerCollector(context))
+            .maxContentLength(250_000L)
+            .redactHeaders(emptySet())
+            .alwaysReadResponseBody(true)
+            .build()
         OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
+            .addInterceptor(chuckerInterceptor)
             .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
             .build()
@@ -57,7 +63,7 @@ val networkModule = module {
     single {
         val retrofit = Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(GsonConverterFactory.create())
             .client(get())
             .build()
         retrofit.create(ApiService::class.java)
@@ -80,4 +86,6 @@ val useCaseModule = module {
 
 val viewModelModule = module {
     viewModel { HomeViewModel(get()) }
+    viewModel { DetailUserViewModel(get()) }
+    viewModel { SearchViewModel(get()) }
 }

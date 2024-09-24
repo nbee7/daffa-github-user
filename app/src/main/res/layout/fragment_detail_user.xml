@@ -45,6 +45,7 @@
                         android:id="@+id/pbImageUser"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:indeterminateTint="@color/md_theme_onTertiary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -53,6 +54,7 @@
                         android:id="@+id/pbDetailUser"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
+                        android:indeterminateTint="@color/md_theme_onTertiary"
                         android:layout_marginTop="120dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -195,8 +197,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:tabIndicatorColor="@color/md_theme_secondary"
-                app:tabSelectedTextColor="@color/design_default_color_secondary_variant"
-                app:tabTextColor="@color/md_theme_onSecondary" />
+                app:tabSelectedTextColor="@color/md_theme_secondaryContainer"
+                app:tabTextColor="@color/md_theme_onSecondaryContainer" />
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/vp_follow_repo"

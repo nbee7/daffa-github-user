@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.tabs.TabLayoutMediator
 import com.techtest.daffa_github_user.R
 import com.techtest.daffa_github_user.data.Resource
 import com.techtest.daffa_github_user.databinding.FragmentDetailUserBinding
 import com.techtest.daffa_github_user.domain.model.UserDetail
+import com.techtest.daffa_github_user.ui.adapter.SectionPagerAdapter
+import com.techtest.daffa_github_user.ui.adapter.SectionPagerAdapter.Companion.TAB_TITLES
 import com.techtest.daffa_github_user.util.gone
 import com.techtest.daffa_github_user.util.setImageUrl
 import com.techtest.daffa_github_user.util.toShortNumberDisplay
@@ -22,6 +25,7 @@ class DetailUserFragment : Fragment() {
     private val binding get() = _binding
     private val detailUserFragmentArgs: DetailUserFragmentArgs by navArgs()
     private val detailUserViewModel: DetailUserViewModel by viewModel()
+    private var username: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,25 +37,53 @@ class DetailUserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val username = detailUserFragmentArgs.username
+        username = detailUserFragmentArgs.username
+
+        if (savedInstanceState == null) {
+            username?.let { detailUserViewModel.getDetailUser(it) }
+        }
+        observeUserDetail()
+        initViewPager()
+
     }
 
-    private fun observeUserDetail(name: String) {
-        detailUserViewModel.getDetailGame(name).observe(viewLifecycleOwner) { user ->
-            when (user) {
-                is Resource.Error -> {
-                    showLoading(false)
-                    Timber.e(user.message)
-                    setViewEmpty()
-                }
+    private fun observeUserDetail() {
+        detailUserViewModel.userDetail.observe(viewLifecycleOwner) { user ->
+            if (user.data != null) {
+                when (user) {
+                    is Resource.Error -> {
+                        showLoading(false)
+                        Timber.e(user.message)
+                        setViewEmpty()
+                    }
 
-                is Resource.Loading -> showLoading(true)
-                is Resource.Success -> {
-                    showLoading(false)
-                    user.data?.let { setViewUserDetail(it) }
+                    is Resource.Loading -> showLoading(true)
+                    is Resource.Success -> {
+                        showLoading(false)
+                        setViewUserDetail(user.data)
+                    }
+                }
+            } else {
+                setViewEmpty()
+            }
+        }
+    }
+
+    private fun initViewPager() {
+        val sectionPagerAdapter = SectionPagerAdapter(requireActivity(), username)
+        binding?.vpFollowRepo?.apply {
+            adapter = sectionPagerAdapter
+            offscreenPageLimit = 2
+        }
+        binding?.apply {
+            val mediator = TabLayoutMediator(tabLayout, vpFollowRepo) { tab, pos ->
+                tab.text = when (pos) {
+                    0 -> getString(TAB_TITLES[0])
+                    1 -> getString(TAB_TITLES[1])
+                    else -> getString(TAB_TITLES[1])
                 }
             }
-
+            mediator.attach()
         }
     }
 

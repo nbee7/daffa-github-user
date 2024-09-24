@@ -32,9 +32,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (activity != null) {
-            observeUser()
-        }
+        observeUser()
     }
 
     private fun observeUser() {
@@ -93,7 +91,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun onItemUserClicked(username: String) {
-        val action = HomeFragmentDirections.actionToDetail(username)
+        val action = HomeFragmentDirections.homeToDetail(username)
         findNavController().navigate(action)
     }
 

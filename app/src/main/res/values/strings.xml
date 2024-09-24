@@ -7,4 +7,5 @@
     <string name="profile_menu">profile</string>
     <string name="txt_followings">Followings</string>
     <string name="txt_followers">Followers</string>
+    <string name="search">search</string>
 </resources>

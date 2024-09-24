@@ -10,7 +10,7 @@ import com.techtest.daffa_github_user.databinding.ItemUserBinding
 import com.techtest.daffa_github_user.domain.model.User
 import com.techtest.daffa_github_user.util.setImageUrl
 
-class UserAdapter(val callback: (String) -> Unit) :
+class UserAdapter(val callback: (String) -> Unit = {}) :
     ListAdapter<User, UserAdapter.VerticalViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerticalViewHolder {

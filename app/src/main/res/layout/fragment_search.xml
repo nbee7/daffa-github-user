@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.search.SearchFragment">
 
+
     <androidx.appcompat.widget.SearchView
         android:id="@+id/sv_user"
         android:layout_width="match_parent"
@@ -27,6 +28,20 @@
         app:layout_constraintTop_toBottomOf="@+id/sv_user"
         tools:listitem="@layout/item_user"
         tools:itemCount="10" />
+
+    <ProgressBar
+        android:id="@+id/pb_user"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/md_theme_secondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lt_user_not_found"

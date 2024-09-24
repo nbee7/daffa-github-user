@@ -1,6 +1,7 @@
 package com.techtest.daffa_github_user.data.source.remote.network
 
 import com.techtest.daffa_github_user.BuildConfig
+import com.techtest.daffa_github_user.data.source.remote.response.ListUserResponse
 import com.techtest.daffa_github_user.data.source.remote.response.UserDetailResponse
 import com.techtest.daffa_github_user.data.source.remote.response.UserResponse
 import retrofit2.http.GET
@@ -18,7 +19,7 @@ interface ApiService {
     suspend fun searchUser(
         @Query("q") username: String,
         @Header("Authorization") token: String = BuildConfig.TOKEN
-    ): List<UserResponse>
+    ): ListUserResponse
 
     @GET("users/{username}")
     suspend fun getDetail(
@@ -32,7 +33,7 @@ interface ApiService {
         @Header("Authorization") token: String = BuildConfig.TOKEN
     ): List<UserResponse>
 
-    @GET("users/{username}/following")
+    @GET("user/{username}/following")
     suspend fun getFollowings(
         @Path("username") username: String,
         @Header("Authorization") token: String = BuildConfig.TOKEN

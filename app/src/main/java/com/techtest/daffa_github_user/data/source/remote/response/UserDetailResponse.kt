@@ -1,26 +1,26 @@
 package com.techtest.daffa_github_user.data.source.remote.response
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
 data class UserDetailResponse(
-    @Json(name = "company")
+    @field:SerializedName("company")
     val company: String,
 
-    @Json(name = "followers")
+    @field:SerializedName("followers")
     val followers: Int,
 
-    @Json(name = "avatar_url")
+    @field:SerializedName("avatar_url")
     val avatarUrl: String,
 
-    @Json(name = "following")
+    @field:SerializedName("following")
     val following: Int,
 
-    @Json(name = "name")
+    @field:SerializedName("name")
     val name: String,
 
-    @Json(name = "location")
+    @field:SerializedName("location")
     val location: String,
 
-    @Json(name = "id")
+    @field:SerializedName("id")
     val id: Int
 )

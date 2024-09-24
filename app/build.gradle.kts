@@ -66,6 +66,7 @@ android {
 dependencies {
 
     implementation(libs.timber)
+    implementation(libs.retrofit.gson)
     implementation(libs.circle.image)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
