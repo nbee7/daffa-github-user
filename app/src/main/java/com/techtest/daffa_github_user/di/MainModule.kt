@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.techtest.daffa_github_user.BuildConfig
 import com.techtest.daffa_github_user.data.UserRepository
 import com.techtest.daffa_github_user.data.source.local.LocalDataSource
@@ -41,9 +39,6 @@ val databaseModule = module {
 
 
 const val CONNECTION_TIMEOUT = 120L
-val moshi = Moshi.Builder()
-    .add(KotlinJsonAdapterFactory())
-    .build()
 
 val networkModule = module {
     single {

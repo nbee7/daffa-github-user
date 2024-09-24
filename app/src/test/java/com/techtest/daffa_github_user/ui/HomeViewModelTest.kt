@@ -8,7 +8,7 @@ import com.techtest.daffa_github_user.domain.usecase.UserUseCase
 import com.techtest.daffa_github_user.ui.home.HomeViewModel
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
@@ -30,7 +30,7 @@ class HomeViewModelTest {
 
     private lateinit var homeViewModel: HomeViewModel
 
-    private val testDispatcher = TestCoroutineDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
@@ -41,7 +41,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `getListUser should update listUser LiveData`(): Unit = runTest {
+    fun `getListUser should update listUser LiveData`() = runTest {
         val userList = listOf(User("John Doe", "example.com"), User("Jane Doe", "example.com"))
         val resource = Resource.Success(userList)
 

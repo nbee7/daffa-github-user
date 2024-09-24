@@ -13,10 +13,6 @@ class HomeViewModel(private val userUseCase: UserUseCase) : ViewModel() {
     private val _listUser = MutableLiveData<Resource<List<User>>>()
     val listUser: LiveData<Resource<List<User>>> = _listUser
 
-    init {
-        getListUser()
-    }
-
     fun getListUser() {
         viewModelScope.launch {
             userUseCase.getListUser().collect {
