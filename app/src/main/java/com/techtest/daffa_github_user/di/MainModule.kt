@@ -3,9 +3,14 @@ package com.techtest.daffa_github_user.di
 import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.techtest.daffa_github_user.BuildConfig
+import com.techtest.daffa_github_user.data.UserRepository
+import com.techtest.daffa_github_user.data.source.local.LocalDataSource
 import com.techtest.daffa_github_user.data.source.local.room.Config.DATABASE_NAME
 import com.techtest.daffa_github_user.data.source.local.room.UserDatabase
+import com.techtest.daffa_github_user.data.source.remote.RemoteDataSource
 import com.techtest.daffa_github_user.data.source.remote.network.ApiService
+import com.techtest.daffa_github_user.domain.repository.IUserRepository
+import com.techtest.daffa_github_user.util.DataMapper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -16,6 +21,7 @@ import java.util.concurrent.TimeUnit
 
 val databaseModule = module {
     factory { get<UserDatabase>().userDao() }
+    factory { get<UserDatabase>().userDetailDao() }
     single {
         Room.databaseBuilder(
             androidContext(),
@@ -49,4 +55,14 @@ val networkModule = module {
             .build()
         retrofit.create(ApiService::class.java)
     }
+}
+
+val utilModule = module {
+    single { DataMapper() }
+}
+
+val repositoryModule = module {
+    single { LocalDataSource(get(), get()) }
+    single { RemoteDataSource(get()) }
+    single<IUserRepository> { UserRepository(get(), get(), get()) }
 }

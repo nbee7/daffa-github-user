@@ -1,9 +1,10 @@
-package com.techtest.daffa_github_user.data.source.local.room
+package com.techtest.daffa_github_user.data.source.local.room.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.techtest.daffa_github_user.data.source.local.room.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,7 +17,4 @@ interface UserDao {
 
     @Query("SELECT * FROM table_user")
     fun getListUser(): Flow<List<UserEntity>>
-
-    @Query("SELECT * FROM table_user WHERE user_id = :id")
-    fun getDetailUser(id: Int): Flow<UserEntity>
 }

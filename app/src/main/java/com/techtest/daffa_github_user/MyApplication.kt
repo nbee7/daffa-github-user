@@ -3,6 +3,8 @@ package com.techtest.daffa_github_user
 import android.app.Application
 import com.techtest.daffa_github_user.di.databaseModule
 import com.techtest.daffa_github_user.di.networkModule
+import com.techtest.daffa_github_user.di.repositoryModule
+import com.techtest.daffa_github_user.di.utilModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -17,7 +19,9 @@ class MyApplication : Application() {
             modules(
                 listOf(
                     databaseModule,
-                    networkModule
+                    networkModule,
+                    repositoryModule,
+                    utilModule
                 )
             )
         }

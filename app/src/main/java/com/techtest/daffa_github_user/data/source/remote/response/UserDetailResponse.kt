@@ -6,9 +6,6 @@ data class UserDetailResponse(
     @Json(name = "company")
     val company: String,
 
-    @Json(name = "public_repos")
-    val publicRepos: Int,
-
     @Json(name = "followers")
     val followers: Int,
 
@@ -25,8 +22,5 @@ data class UserDetailResponse(
     val location: String,
 
     @Json(name = "id")
-    val id: Int,
-
-    @Json(name = "login")
-    val login: String
+    val id: Int
 )
