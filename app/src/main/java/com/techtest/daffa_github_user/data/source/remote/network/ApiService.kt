@@ -33,7 +33,7 @@ interface ApiService {
         @Header("Authorization") token: String = BuildConfig.TOKEN
     ): List<UserResponse>
 
-    @GET("user/{username}/following")
+    @GET("users/{username}/following")
     suspend fun getFollowings(
         @Path("username") username: String,
         @Header("Authorization") token: String = BuildConfig.TOKEN

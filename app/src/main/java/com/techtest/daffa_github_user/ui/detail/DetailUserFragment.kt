@@ -98,8 +98,8 @@ class DetailUserFragment : Fragment() {
                 )
             }
             tvUsername.text = user.name
-            tvCompany.text = user.company
-            tvLocation.text = user.location
+            tvCompany.text = user.company.ifEmpty { "-" }
+            tvLocation.text = user.location.ifEmpty { "-" }
             tvFollowers.text = user.followers.toShortNumberDisplay()
             tvFollowings.text = user.following.toShortNumberDisplay()
         }

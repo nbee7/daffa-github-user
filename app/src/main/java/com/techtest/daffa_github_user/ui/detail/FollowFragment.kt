@@ -85,13 +85,11 @@ class FollowFragment : Fragment() {
                 when (user) {
                     is Resource.Loading -> showLoading(true)
                     is Resource.Error -> {
-                        Timber.e(user.message)
                         showLoading(false)
                     }
 
                     is Resource.Success -> {
                         showLoading(false)
-                        Timber.e("disini ${user.data}")
                         user.data?.let { setRecycleview(it) }
                     }
                 }
@@ -136,8 +134,8 @@ class FollowFragment : Fragment() {
     companion object {
         const val ARG_SECTION_INDEX = "arg_section_index"
         const val ARG_USERNAME = "arg_username"
-        const val PAGE_FOLLOWERS = 1
-        const val PAGE_FOLLOWINGS = 2
+        const val PAGE_FOLLOWERS = 0
+        const val PAGE_FOLLOWINGS = 1
 
         @JvmStatic
         fun newInstance(index: Int, username: String?) =
