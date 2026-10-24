@@ -22,8 +22,10 @@ import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 val databaseModule = module {
@@ -56,9 +58,14 @@ val networkModule = module {
             .build()
     }
     single {
+        Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+    }
+    single {
         val retrofit = Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(get()))
             .client(get())
             .build()
         retrofit.create(ApiService::class.java)

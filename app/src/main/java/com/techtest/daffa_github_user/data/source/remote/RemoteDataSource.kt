@@ -5,6 +5,7 @@ import com.techtest.daffa_github_user.data.source.remote.network.ApiService
 import com.techtest.daffa_github_user.data.source.remote.response.ListUserResponse
 import com.techtest.daffa_github_user.data.source.remote.response.UserDetailResponse
 import com.techtest.daffa_github_user.data.source.remote.response.UserResponse
+import com.techtest.daffa_github_user.util.ElvisUtil.orFalse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -32,7 +33,7 @@ class RemoteDataSource(private val apiService: ApiService) {
         return flow {
             try {
                 val response = apiService.getDetail(username, token)
-                if (response.name.isNotEmpty()) {
+                if (response.name?.isNotEmpty().orFalse()) {
                     emit(Result.Success(response))
                 } else {
                     emit(Result.Empty)

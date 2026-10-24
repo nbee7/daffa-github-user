@@ -66,7 +66,9 @@ android {
 dependencies {
 
     implementation(libs.timber)
-    implementation(libs.retrofit.gson)
+    implementation(libs.retrofit.moshi)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
     implementation(libs.circle.image)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
