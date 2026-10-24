@@ -8,7 +8,7 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.techtest.daffa_github_user.MainActivity
+import com.techtest.daffa_github_user.app.MainActivity
 import com.techtest.daffa_github_user.R
 import com.techtest.daffa_github_user.core.MockServerDispatcher
 import com.techtest.daffa_github_user.core.MockServerRule

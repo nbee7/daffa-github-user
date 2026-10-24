@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.techtest.daffa_github_user.ui.home.HomeFragment"
+        android:name="com.techtest.daffa_github_user.feature.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/detailUserFragment"
-        android:name="com.techtest.daffa_github_user.ui.detail.DetailUserFragment"
+        android:name="com.techtest.daffa_github_user.feature.detail.DetailUserFragment"
         android:label="fragment_detail-user"
         tools:layout="@layout/fragment_home">
         <argument
@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.techtest.daffa_github_user.ui.search.SearchFragment"
+        android:name="com.techtest.daffa_github_user.feature.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search">
         <action
@@ -46,7 +46,7 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.techtest.daffa_github_user.ui.profile.ProfileFragment"
+        android:name="com.techtest.daffa_github_user.feature.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile">
     </fragment>
