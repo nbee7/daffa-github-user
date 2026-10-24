@@ -1,6 +1,6 @@
 package com.techtest.daffa_github_user.core
 
-import com.techtest.daffa_github_user.data.source.local.room.UserDatabase
+import com.techtest.daffa_github_user.core.data.local.room.UserDatabase
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
