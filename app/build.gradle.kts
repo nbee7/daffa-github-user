@@ -8,6 +8,11 @@ plugins {
     id("kotlin-kapt")
 }
 
+val releaseSigningProperties = Properties().apply {
+    val signingPropertiesFile = File(System.getProperty("user.home"), ".gradle/daffa-github-user-signing.properties")
+    if (signingPropertiesFile.exists()) signingPropertiesFile.inputStream().use { load(it) }
+}
+
 android {
     namespace = "com.techtest.daffa_github_user"
     compileSdk = 34
@@ -25,6 +30,14 @@ android {
 
     buildTypes {
         release {
+            if (releaseSigningProperties.isNotEmpty()) {
+                signingConfig = signingConfigs.create("release") {
+                    storeFile = File(releaseSigningProperties.getProperty("storeFile"))
+                    storePassword = releaseSigningProperties.getProperty("storePassword")
+                    keyAlias = releaseSigningProperties.getProperty("keyAlias")
+                    keyPassword = releaseSigningProperties.getProperty("keyPassword")
+                }
+            }
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
