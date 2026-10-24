@@ -59,4 +59,42 @@ class HomeViewModelTest {
 
         homeViewModel.listUser.removeObserver(observer)
     }
+
+    @Test
+    fun `getListUser should emit Error resource`() = runTest {
+        val resource = Resource.Error<List<User>>("Network Error")
+
+        `when`(userUseCase.getListUser()).thenReturn(flow {
+            emit(resource)
+        })
+
+        val observer = mock(Observer::class.java) as Observer<Resource<List<User>>>
+        homeViewModel.listUser.observeForever(observer)
+
+        homeViewModel.getListUser()
+
+        verify(observer).onChanged(resource)
+        assertEquals(resource, homeViewModel.listUser.value)
+
+        homeViewModel.listUser.removeObserver(observer)
+    }
+
+    @Test
+    fun `getListUser should emit Loading resource`() = runTest {
+        val resource = Resource.Loading<List<User>>()
+
+        `when`(userUseCase.getListUser()).thenReturn(flow {
+            emit(resource)
+        })
+
+        val observer = mock(Observer::class.java) as Observer<Resource<List<User>>>
+        homeViewModel.listUser.observeForever(observer)
+
+        homeViewModel.getListUser()
+
+        verify(observer).onChanged(resource)
+        assertEquals(resource, homeViewModel.listUser.value)
+
+        homeViewModel.listUser.removeObserver(observer)
+    }
 }

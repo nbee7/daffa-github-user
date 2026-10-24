@@ -127,4 +127,46 @@ class DetailUserViewModelTest {
 
         verify(userDetailObserver).onChanged(expectedError)
     }
+
+    @Test
+    fun `test userFollowers loading state`() = runTest {
+        val username = "testuser"
+        val expectedLoading = Resource.Loading<List<User>>()
+
+        whenever(userUseCase.getFollowers(username)).thenReturn(flow {
+            emit(expectedLoading)
+        })
+
+        viewModel.userFollowers(username)
+
+        verify(followersObserver).onChanged(expectedLoading)
+    }
+
+    @Test
+    fun `test userFollowing loading state`() = runTest {
+        val username = "testuser"
+        val expectedLoading = Resource.Loading<List<User>>()
+
+        whenever(userUseCase.getFollowings(username)).thenReturn(flow {
+            emit(expectedLoading)
+        })
+
+        viewModel.userFollowing(username)
+
+        verify(followingsObserver).onChanged(expectedLoading)
+    }
+
+    @Test
+    fun `test getDetailUser loading state`() = runTest {
+        val username = "testuser"
+        val expectedLoading = Resource.Loading<UserDetail>()
+
+        whenever(userUseCase.getDetailUser(username)).thenReturn(flow {
+            emit(expectedLoading)
+        })
+
+        viewModel.getDetailUser(username)
+
+        verify(userDetailObserver).onChanged(expectedLoading)
+    }
 }
