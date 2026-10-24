@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.techtest.daffa_github_user.core.model.Resource
-import com.techtest.daffa_github_user.databinding.FragmentFollowBinding
 import com.techtest.daffa_github_user.core.model.User
+import com.techtest.daffa_github_user.databinding.FragmentFollowBinding
 import com.techtest.daffa_github_user.core.ui.adapter.UserAdapter
 import com.techtest.daffa_github_user.core.ui.util.gone
 import com.techtest.daffa_github_user.core.ui.util.visible
@@ -47,13 +48,11 @@ class FollowFragment : Fragment() {
         when (sectionIndex) {
             PAGE_FOLLOWERS -> {
                 if (savedInstanceState == null) username?.let { detailUserViewModel.userFollowers(it) }
-                username?.let { detailUserViewModel.userFollowing(it) }
                 setObserverFollowers()
             }
 
             PAGE_FOLLOWINGS -> {
                 if (savedInstanceState == null) username?.let { detailUserViewModel.userFollowing(it) }
-                username?.let { detailUserViewModel.userFollowing(it) }
                 setObserverFollowings()
             }
         }
@@ -67,7 +66,11 @@ class FollowFragment : Fragment() {
                     is Resource.Loading -> showLoading(true)
                     is Resource.Error -> {
                         Timber.e(user.message)
+                        binding?.lottieEmpty?.gone()
                         showLoading(false)
+                        if (user.message == "No internet") {
+                            Toast.makeText(requireContext(), "No internet", Toast.LENGTH_SHORT).show()
+                        }
                     }
 
                     is Resource.Success -> {
@@ -85,7 +88,11 @@ class FollowFragment : Fragment() {
                 when (user) {
                     is Resource.Loading -> showLoading(true)
                     is Resource.Error -> {
+                        binding?.lottieEmpty?.gone()
                         showLoading(false)
+                        if (user.message == "No internet") {
+                            Toast.makeText(requireContext(), "No internet", Toast.LENGTH_SHORT).show()
+                        }
                     }
 
                     is Resource.Success -> {

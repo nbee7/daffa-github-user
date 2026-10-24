@@ -7,9 +7,9 @@ import com.techtest.daffa_github_user.core.data.local.room.Config.TABLE_USER
 
 @Entity(tableName = TABLE_USER)
 class UserEntity(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    var userId: Int = 0,
+    @PrimaryKey
+    @ColumnInfo(name = "cache_key")
+    var cacheKey: String,
 
     @ColumnInfo(name = "username")
     var username: String,

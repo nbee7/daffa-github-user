@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -64,7 +65,11 @@ class SearchFragment : Fragment() {
                 is Resource.Error -> {
                     showLoading(false)
                     Timber.e(user.message)
-                    binding?.ltUserNotFound?.visible()
+                    if (user.message == "No internet") {
+                        Toast.makeText(requireContext(), "No internet", Toast.LENGTH_SHORT).show()
+                    } else {
+                        binding?.ltUserNotFound?.visible()
+                    }
                 }
             }
         }

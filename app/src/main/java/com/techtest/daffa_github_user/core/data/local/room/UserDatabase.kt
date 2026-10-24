@@ -9,7 +9,7 @@ import com.techtest.daffa_github_user.core.data.local.room.entity.UserEntity
 
 @Database(
     entities = [UserEntity::class, UserDetailEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class UserDatabase : RoomDatabase() {

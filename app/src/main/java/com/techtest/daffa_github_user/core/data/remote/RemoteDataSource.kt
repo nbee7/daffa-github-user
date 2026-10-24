@@ -5,11 +5,11 @@ import com.techtest.daffa_github_user.core.data.remote.network.ApiService
 import com.techtest.daffa_github_user.core.data.remote.response.ListUserResponse
 import com.techtest.daffa_github_user.core.data.remote.response.UserDetailResponse
 import com.techtest.daffa_github_user.core.data.remote.response.UserResponse
-import com.techtest.daffa_github_user.core.data.util.ElvisUtil.orFalse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.io.IOException
 
 class RemoteDataSource(private val apiService: ApiService) {
     private val token = "token " + BuildConfig.TOKEN
@@ -23,6 +23,8 @@ class RemoteDataSource(private val apiService: ApiService) {
                 } else {
                     emit(Result.Empty)
                 }
+            } catch (e: IOException) {
+                emit(Result.Error("No internet"))
             } catch (e: Exception) {
                 emit(Result.Error("unexpected Error ${e.message}"))
             }
@@ -33,11 +35,9 @@ class RemoteDataSource(private val apiService: ApiService) {
         return flow {
             try {
                 val response = apiService.getDetail(username, token)
-                if (response.name?.isNotEmpty().orFalse()) {
-                    emit(Result.Success(response))
-                } else {
-                    emit(Result.Empty)
-                }
+                emit(Result.Success(response))
+            } catch (e: IOException) {
+                emit(Result.Error("No internet"))
             } catch (e: Exception) {
                 emit(Result.Error("unexpected Error ${e.message}"))
             }
@@ -53,6 +53,8 @@ class RemoteDataSource(private val apiService: ApiService) {
                 } else {
                     emit(Result.Empty)
                 }
+            } catch (e: IOException) {
+                emit(Result.Error("No internet"))
             } catch (e: Exception) {
                 emit(Result.Error("unexpected Error ${e.message}"))
             }
@@ -68,6 +70,8 @@ class RemoteDataSource(private val apiService: ApiService) {
                 } else {
                     emit(Result.Empty)
                 }
+            } catch (e: IOException) {
+                emit(Result.Error("No internet"))
             } catch (e: Exception) {
                 emit(Result.Error("unexpected Error ${e.message}"))
             }
@@ -83,6 +87,8 @@ class RemoteDataSource(private val apiService: ApiService) {
                 } else {
                     emit(Result.Empty)
                 }
+            } catch (e: IOException) {
+                emit(Result.Error("No internet"))
             } catch (e: Exception) {
                 emit(Result.Error("unexpected Error ${e.message}"))
             }
