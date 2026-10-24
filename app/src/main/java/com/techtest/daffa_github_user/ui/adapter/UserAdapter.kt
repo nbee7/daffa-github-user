@@ -36,7 +36,7 @@ class UserAdapter(val callback: (String) -> Unit = {}) :
                     R.drawable.ic_no_image
                 )
 
-                tvUsername.text = data.username
+                tvItemUsername.text = data.username
 
                 itemView.setOnClickListener {
                     callback.invoke(data.username)

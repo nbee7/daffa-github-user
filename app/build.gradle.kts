@@ -20,6 +20,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testBuildType = "e2e"
     }
 
     buildTypes {
@@ -33,6 +34,11 @@ android {
         debug {
             isMinifyEnabled = false
             isDebuggable = true
+        }
+        create("e2e") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".e2e"
+            buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/\"")
         }
     }
     compileOptions {
@@ -96,11 +102,14 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     debugImplementation(libs.chucker)
+    add("e2eImplementation", libs.chucker)
     releaseImplementation(libs.chucker.no.op)
     implementation(libs.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.espresso.contrib)
+    androidTestImplementation(libs.mockwebserver)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.coroutines.test)
