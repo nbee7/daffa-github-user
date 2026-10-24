@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.techtest.daffa_github_user", appContext.packageName)
+        assertEquals(com.techtest.daffa_github_user.BuildConfig.APPLICATION_ID, appContext.packageName)
     }
 }

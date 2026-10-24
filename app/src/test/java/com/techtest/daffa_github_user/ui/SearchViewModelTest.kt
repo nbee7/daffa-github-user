@@ -76,5 +76,32 @@ class SearchViewModelTest {
 
         verify(listUserObserver).onChanged(expectedEmptyResult)
     }
-}
 
+    @Test
+    fun `test searchUser loading state`() = runTest {
+        val username = "testuser"
+        val expectedLoading = Resource.Loading<List<User>>()
+
+        whenever(useCase.searchUser(username)).thenReturn(flow {
+            emit(expectedLoading)
+        })
+
+        viewModel.searchUser(username)
+
+        verify(listUserObserver).onChanged(expectedLoading)
+    }
+
+    @Test
+    fun `test searchUser with empty query string`() = runTest {
+        val username = ""
+        val expectedEmptyResult = Resource.Success(emptyList<User>())
+
+        whenever(useCase.searchUser(username)).thenReturn(flow {
+            emit(expectedEmptyResult)
+        })
+
+        viewModel.searchUser(username)
+
+        verify(listUserObserver).onChanged(expectedEmptyResult)
+    }
+}
