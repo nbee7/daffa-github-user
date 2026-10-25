@@ -1,12 +1,7 @@
 package com.techtest.daffa_github_user.app
 
-import com.techtest.daffa_github_user.R
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
@@ -15,35 +10,20 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.techtest.daffa_github_user.R
 import com.techtest.daffa_github_user.databinding.ActivityMainBinding
+
+internal fun shouldRequestNotificationPermission(
+    sdkInt: Int,
+    alreadyRequested: Boolean,
+    isGranted: Boolean
+): Boolean = sdkInt >= Build.VERSION_CODES.TIRAMISU && !alreadyRequested && !isGranted
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var hasNotificationPermissionGranted = false
 
     private val notificationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            hasNotificationPermissionGranted = isGranted
-            if (!isGranted) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (Build.VERSION.SDK_INT >= 33) {
-                        if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
-                            showNotificationPermissionRationale()
-                        } else {
-                            showSettingDialog()
-                        }
-                    }
-                }
-            } else {
-                Toast.makeText(
-                    applicationContext,
-                    "notification permission granted",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-            }
-        }
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,51 +54,25 @@ class MainActivity : AppCompatActivity() {
                 NavigationUI.onNavDestinationSelected(item, navController)
             }
         }
+
+        val preferences = getPreferences(MODE_PRIVATE)
+        val alreadyRequested = preferences.getBoolean(NOTIFICATION_PERMISSION_REQUESTED, false)
+        val isGranted = Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) ==
+            android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (Build.VERSION.SDK_INT >= 33 && !alreadyRequested) {
+            preferences.edit().putBoolean(NOTIFICATION_PERMISSION_REQUESTED, true).apply()
+            if (shouldRequestNotificationPermission(Build.VERSION.SDK_INT, alreadyRequested, isGranted)) {
+                notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.nav_host_fragment).navigateUp()
     }
 
-    private fun checkPermissionPushNotification() {
-        if (Build.VERSION.SDK_INT >= 33) {
-            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            hasNotificationPermissionGranted = true
-        }
-    }
-
-
-    private fun showSettingDialog() {
-        MaterialAlertDialogBuilder(
-            this,
-            com.google.android.material.R.style.MaterialAlertDialog_Material3
-        )
-            .setTitle("Notification Permission")
-            .setMessage("Notification permission is required, Please allow notification permission from setting")
-            .setPositiveButton("Ok") { _, _ ->
-                val intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.data = Uri.parse("package:$packageName")
-                startActivity(intent)
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun showNotificationPermissionRationale() {
-
-        MaterialAlertDialogBuilder(
-            this,
-            com.google.android.material.R.style.MaterialAlertDialog_Material3
-        )
-            .setTitle("Alert")
-            .setMessage("Notification permission is required, to show notification")
-            .setPositiveButton("Ok") { _, _ ->
-                if (Build.VERSION.SDK_INT >= 33) {
-                    notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-                }
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
+    private companion object {
+        const val NOTIFICATION_PERMISSION_REQUESTED = "notification_permission_requested"
     }
 }
