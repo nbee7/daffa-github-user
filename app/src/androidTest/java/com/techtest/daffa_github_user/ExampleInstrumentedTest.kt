@@ -2,6 +2,7 @@ package com.techtest.daffa_github_user
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,6 +16,11 @@ import org.junit.Assert.*
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+    @org.junit.Rule
+    @JvmField
+    val notificationPermissionRule =
+        GrantPermissionRule.grant(android.Manifest.permission.POST_NOTIFICATIONS)
+
     @Test
     fun useAppContext() {
         // Context of the app under test.

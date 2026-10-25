@@ -7,6 +7,7 @@ import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.techtest.daffa_github_user.app.MainActivity
 import com.techtest.daffa_github_user.R
@@ -23,7 +24,8 @@ class SearchUserE2ETest {
 
     @get:Rule
     val ruleChain: RuleChain = RuleChain
-        .outerRule(MockServerRule(MockServerDispatcher.RequestDispatcher()))
+        .outerRule(GrantPermissionRule.grant(android.Manifest.permission.POST_NOTIFICATIONS))
+        .around(MockServerRule(MockServerDispatcher.RequestDispatcher()))
         .around(ActivityScenarioRule(MainActivity::class.java))
 
     @Test

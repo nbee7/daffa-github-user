@@ -7,6 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.techtest.daffa_github_user.R
@@ -27,7 +28,8 @@ class HomeToDetailE2ETest {
 
     @get:Rule
     val ruleChain: RuleChain = RuleChain
-        .outerRule(MockServerRule(MockServerDispatcher.RequestDispatcher()))
+        .outerRule(GrantPermissionRule.grant(android.Manifest.permission.POST_NOTIFICATIONS))
+        .around(MockServerRule(MockServerDispatcher.RequestDispatcher()))
         .around(ActivityScenarioRule(MainActivity::class.java))
 
     @Test
