@@ -26,6 +26,7 @@ abstract class NetworkBoundResource<ResultType, RequestType>(
                 }
 
                 is Result.Empty -> {
+                    saveEmptyCallResult()
                     emitAll(loadFromDB().map {
                         Resource.Success(it)
                     })
@@ -44,6 +45,8 @@ abstract class NetworkBoundResource<ResultType, RequestType>(
             })
         }
     }
+
+    protected open suspend fun saveEmptyCallResult() {}
 
     protected open fun onFetchFailed() {}
 

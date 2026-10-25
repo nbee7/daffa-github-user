@@ -1,16 +1,17 @@
 package com.techtest.daffa_github_user.core.data.repository
 
 import com.techtest.daffa_github_user.core.data.local.LocalDataSource
+import com.techtest.daffa_github_user.core.data.local.room.entity.UserEntity
+import com.techtest.daffa_github_user.core.data.mapper.DataMapper
 import com.techtest.daffa_github_user.core.data.remote.RemoteDataSource
 import com.techtest.daffa_github_user.core.data.remote.Result
+import com.techtest.daffa_github_user.core.data.remote.response.UserDetailResponse
 import com.techtest.daffa_github_user.core.data.remote.response.UserResponse
+import com.techtest.daffa_github_user.core.domain.repository.IUserRepository
 import com.techtest.daffa_github_user.core.model.Resource
 import com.techtest.daffa_github_user.core.model.User
 import com.techtest.daffa_github_user.core.model.UserDetail
-import com.techtest.daffa_github_user.core.domain.repository.IUserRepository
-import com.techtest.daffa_github_user.core.data.mapper.DataMapper
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class UserRepository(
@@ -20,113 +21,99 @@ class UserRepository(
 ) : IUserRepository {
     override fun getListUser(): Flow<Resource<List<User>>> =
         object : NetworkBoundResource<List<User>, List<UserResponse>>() {
-            override fun loadFromDB(): Flow<List<User>> {
-                return localDataSource.getListUser().map {
-                    dataMapper.mapUserListEntityToUserListDomain(it)
-                }
+            override fun loadFromDB(): Flow<List<User>> = localDataSource.getListUser().map {
+                dataMapper.mapUserListEntityToUserListDomain(it)
             }
 
-            override suspend fun createCall(): Flow<Result<List<UserResponse>>> {
-                return remoteDataSource.getListUser()
-            }
+            override fun shouldFetch(data: List<User>?): Boolean = data.isNullOrEmpty()
+
+            override suspend fun createCall(): Flow<Result<List<UserResponse>>> =
+                remoteDataSource.getListUser()
 
             override suspend fun saveCallResult(data: List<UserResponse>) {
-                val mapper = dataMapper.mapUserListResponseToUserListEntity(data)
-                localDataSource.insetUserList(mapper)
+                localDataSource.replaceHomeUsers(dataMapper.mapUserListResponseToUserListEntity(data))
             }
 
-            override fun shouldFetch(data: List<User>?): Boolean {
-                return data.isNullOrEmpty() || data.isEmpty()
+            override suspend fun saveEmptyCallResult() {
+                localDataSource.replaceHomeUsers(listOf(UserEntity("home:empty", "", "")))
             }
-        }.asFlow()
+        }.asFlow().map { resource ->
+            when (resource) {
+                is Resource.Success -> Resource.Success(resource.data?.filter { it.username.isNotEmpty() }.orEmpty())
+                is Resource.Loading -> Resource.Loading(resource.data)
+                is Resource.Error -> resource
+            }
+        }
 
-    override fun getDetailUser(name: String): Flow<Resource<UserDetail>> {
-        return flow {
-            remoteDataSource.getUserDetail(name).collect {
-                when (it) {
-                    is Result.Success -> {
-                        emit(Resource.Success(dataMapper.mapUserDetailResponseToUserDetail(it.data)))
-                    }
+    override fun getDetailUser(name: String): Flow<Resource<UserDetail>> =
+        object : NetworkBoundResource<UserDetail?, UserDetailResponse>() {
+            override fun loadFromDB(): Flow<UserDetail?> = localDataSource.getDetailUser(name).map {
+                it?.let(dataMapper::mapUserDetailEntityToUserDetailDomain)
+            }
 
-                    is Result.Empty -> {
-                        emit(Resource.Error(it.toString(), null))
-                    }
+            override fun shouldFetch(data: UserDetail?): Boolean = data == null
 
-                    is Result.Error -> {
-                        emit(Resource.Error(it.errorMessage))
-                    }
+            override suspend fun createCall(): Flow<Result<UserDetailResponse>> =
+                remoteDataSource.getUserDetail(name)
+
+            override suspend fun saveCallResult(data: UserDetailResponse) {
+                localDataSource.insertUserDetail(dataMapper.mapUserDetailResponseToUserDetailEntity(name, data))
+            }
+        }.asFlow().map { resource ->
+            when (resource) {
+                is Resource.Loading -> Resource.Loading<UserDetail>()
+                is Resource.Error -> Resource.Error(resource.message.orEmpty())
+                is Resource.Success -> resource.data?.let { Resource.Success(it) }
+                    ?: Resource.Error("User not found")
+            }
+        }
+
+    override fun getFollowers(name: String): Flow<Resource<List<User>>> =
+        cachedUsers("followers:$name:") { remoteDataSource.getFollowers(name) }
+
+    override fun getFollowings(name: String): Flow<Resource<List<User>>> =
+        cachedUsers("following:$name:") { remoteDataSource.getFollowings(name) }
+
+    override fun searchUser(name: String): Flow<Resource<List<User>>> =
+        cachedUsers("search:${name.length}:$name:") {
+            remoteDataSource.searchUser(name).map { result ->
+                when (result) {
+                    is Result.Success -> Result.Success(result.data.items)
+                    is Result.Empty -> Result.Empty
+                    is Result.Error -> result
                 }
             }
         }
-    }
 
+    private fun cachedUsers(
+        prefix: String,
+        createRequest: suspend () -> Flow<Result<List<UserResponse>>>
+    ): Flow<Resource<List<User>>> =
+        object : NetworkBoundResource<List<User>, List<UserResponse>>() {
+            override fun loadFromDB(): Flow<List<User>> = localDataSource.getCachedList(prefix).map {
+                dataMapper.mapUserListEntityToUserListDomain(it)
+            }
 
-    override fun getFollowers(name: String): Flow<Resource<List<User>>> {
-        return flow {
-            emit(Resource.Loading())
-            remoteDataSource.getFollowers(name).collect {
-                when (it) {
-                    is Result.Success -> {
-                        emit(Resource.Success(dataMapper.mapUserListResponseToUserListDomain(it.data)))
-                    }
+            override fun shouldFetch(data: List<User>?): Boolean = data.isNullOrEmpty()
 
-                    is Result.Empty -> {
-                        emit(Resource.Success(listOf()))
-                    }
+            override suspend fun createCall(): Flow<Result<List<UserResponse>>> = createRequest()
 
-                    is Result.Error -> {
-                        emit(Resource.Error(it.errorMessage))
-                    }
-                }
+            override suspend fun saveCallResult(data: List<UserResponse>) {
+                localDataSource.replaceCachedList(
+                    prefix,
+                    if (data.isEmpty()) listOf(UserEntity(prefix + "empty", "", ""))
+                    else dataMapper.mapUserListResponseToUserListEntity(data, prefix)
+                )
+            }
+
+            override suspend fun saveEmptyCallResult() {
+                localDataSource.replaceCachedList(prefix, listOf(UserEntity(prefix + "empty", "", "")))
+            }
+        }.asFlow().map { resource ->
+            when (resource) {
+                is Resource.Success -> Resource.Success(resource.data?.filter { it.username.isNotEmpty() }.orEmpty())
+                is Resource.Loading -> Resource.Loading(resource.data)
+                is Resource.Error -> resource
             }
         }
-    }
-
-    override fun getFollowings(name: String): Flow<Resource<List<User>>> {
-        return flow {
-            emit(Resource.Loading())
-            remoteDataSource.getFollowings(name).collect {
-                when (it) {
-                    is Result.Success -> {
-                        emit(Resource.Success(dataMapper.mapUserListResponseToUserListDomain(it.data)))
-                    }
-
-                    is Result.Empty -> {
-                        emit(Resource.Success(listOf()))
-                    }
-
-                    is Result.Error -> {
-                        emit(Resource.Error(it.errorMessage))
-                    }
-                }
-            }
-        }
-    }
-
-    override fun searchUser(name: String): Flow<Resource<List<User>>> {
-        return flow {
-            emit(Resource.Loading())
-            remoteDataSource.searchUser(name).collect {
-                when (it) {
-                    is Result.Success -> {
-                        emit(
-                            Resource.Success(
-                                dataMapper.mapSearchUserListResponseToUserListDomain(
-                                    it.data
-                                )
-                            )
-                        )
-                    }
-
-                    is Result.Empty -> {
-                        emit(Resource.Success(listOf()))
-                    }
-
-                    is Result.Error -> {
-                        emit(Resource.Error(it.errorMessage))
-                    }
-                }
-            }
-        }
-    }
 }

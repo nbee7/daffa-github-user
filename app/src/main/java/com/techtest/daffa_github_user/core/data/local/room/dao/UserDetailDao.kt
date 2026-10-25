@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDetailDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserDetailEntity)
 
-    @Query("SELECT * FROM table_user_detail WHERE name = :name")
-    fun getUser(name: String): Flow<UserDetailEntity>
+    @Query("SELECT * FROM table_user_detail WHERE username = :username")
+    fun getUser(username: String): Flow<UserDetailEntity?>
 }

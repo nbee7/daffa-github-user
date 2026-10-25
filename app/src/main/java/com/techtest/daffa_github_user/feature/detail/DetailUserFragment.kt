@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayoutMediator
@@ -49,22 +50,21 @@ class DetailUserFragment : Fragment() {
 
     private fun observeUserDetail() {
         detailUserViewModel.userDetail.observe(viewLifecycleOwner) { user ->
-            if (user.data != null) {
-                when (user) {
-                    is Resource.Error -> {
-                        showLoading(false)
-                        Timber.e(user.message)
+            when (user) {
+                is Resource.Error -> {
+                    showLoading(false)
+                    Timber.e(user.message)
+                    if (user.message == "No internet") {
+                        Toast.makeText(requireContext(), "No internet", Toast.LENGTH_SHORT).show()
+                    } else {
                         setViewEmpty()
                     }
-
-                    is Resource.Loading -> showLoading(true)
-                    is Resource.Success -> {
-                        showLoading(false)
-                        setViewUserDetail(user.data)
-                    }
                 }
-            } else {
-                setViewEmpty()
+                is Resource.Loading -> showLoading(true)
+                is Resource.Success -> {
+                    showLoading(false)
+                    user.data?.let(::setViewUserDetail)
+                }
             }
         }
     }
