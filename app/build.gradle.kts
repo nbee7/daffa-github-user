@@ -1,6 +1,8 @@
 import java.io.FileInputStream
 import java.util.Properties
 
+val appVersion = "0.7.0"
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -21,8 +23,8 @@ android {
         applicationId = "com.techtest.daffa_github_user"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 7
+        versionName = appVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testBuildType = "e2e"
@@ -79,6 +81,20 @@ android {
     defaultConfig {
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         buildConfigField("String", "TOKEN", "\"$authToken\"")
+    }
+}
+
+android.applicationVariants.all {
+    val variantName = name
+    val assembleTaskName = "assemble${variantName.replaceFirstChar { it.uppercase() }}"
+    tasks.named(assembleTaskName).configure {
+        doLast {
+            val outputDirectory = File(layout.buildDirectory.get().asFile, "outputs/apk/$variantName")
+            outputDirectory.listFiles { file -> file.extension == "apk" }?.forEach { apk ->
+                val variantSuffix = if (variantName == "release") "" else "-$variantName"
+                apk.renameTo(File(outputDirectory, "daffa-github-user$variantSuffix-v$appVersion.apk"))
+            }
+        }
     }
 }
 
