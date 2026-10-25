@@ -1,42 +1,74 @@
-# Android GitHub User App
+# Daffa GitHub User
 
-## Deskripsi
-Aplikasi Android yang menampilkan daftar pengguna GitHub, informasi detail pengguna, serta data pengikut dan pengguna yang diikuti. Aplikasi ini menggunakan GitHub API untuk mengambil data.
+An Android app for searching GitHub users and viewing their profiles, followers, and following.
 
-## Fitur Utama
-- Pencarian pengguna GitHub.
-- Menggunakan KOIN sebagai depedency injection
-- retrofit dan okhttp untuk handle API
-- menggunakan version catalog untuk mengatur depedency
-- menggunakan jetpack navigation untuk navigasi antar fragment
-- menggunakan lottie animation
-- room database
-- menggunakan pattern offline first dengan menggunakan NetworkBoundResource
-- Unit test
-- Menampilkan daftar pengikut dan pengguna yang diikuti.
-- Menampilkan detail profil pengguna.
-- Menggunakan **MVVM Architecture**.
-- **Kotlin Coroutines** untuk pemrosesan asynchronous.
-- **LiveData** untuk update UI secara otomatis.
+## Requirements
 
-## Persyaratan
-- Android Studio (versi terbaru disarankan).
-- GitHub API Token.
+- Android Studio
+- JDK 21
+- Internet connection
+- GitHub personal access token
 
-## Cara Instalasi
+## Setup
 
-### 1. Clone Proyek
-Clone repository ini ke komputer lokal kamu dengan perintah berikut:
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/nbee7/daffa-github-user.git
+   cd daffa-github-user
+   ```
+
+2. Open the project folder in Android Studio and wait for Gradle sync to finish.
+
+3. Add the API settings to `local.properties` in the project root. If Android Studio has already created this file, keep the existing `sdk.dir` line.
+
+   ```properties
+   API_BASE_URL=https://api.github.com/
+   API_AUTH_TOKEN=your_github_token_here
+   ```
+
+   The token allows the app to make more requests to the GitHub API. `local.properties` is not included in the repository.
+
+## Run the app
+
+In Android Studio, select the `app` run configuration, choose an emulator or Android device, and click **Run**.
+
+Or run this command from the project folder:
 
 ```bash
-git clone https://github.com/your-repo-url/your-project.git
+./gradlew installDebug
 ```
 
-### 2. Masukan token API
-masukan token API GITHUb anda pada file local.properties
+On Windows, use:
+
+```bat
+gradlew.bat installDebug
+```
+
+## Build the APK
+
 ```bash
-API_BASE_URL=<YOUR_BASE_URL>
-API_AUTH_TOKEN=<YOUR_API_KEY>
+./gradlew assembleDebug
 ```
 
+On Windows:
 
+```bat
+gradlew.bat assembleDebug
+```
+
+The debug APK is saved in `app/build/outputs/apk/debug/` as `daffa-github-user-debug-v0.7.0.apk`.
+
+## Run tests
+
+Unit tests:
+
+```bash
+./gradlew testDebugUnitTest
+```
+
+Instrumented tests require a connected Android emulator or device:
+
+```bash
+./gradlew connectedDebugAndroidTest
+```
