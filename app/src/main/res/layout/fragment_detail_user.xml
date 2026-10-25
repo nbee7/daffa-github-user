@@ -26,6 +26,14 @@
                 app:contentScrim="?android:colorPrimary"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/detail_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:navigationIcon="?attr/homeAsUpIndicator"
+                    app:navigationContentDescription="@string/back"
+                    app:layout_collapseMode="pin" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
